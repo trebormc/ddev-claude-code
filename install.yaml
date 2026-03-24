@@ -1,0 +1,92 @@
+name: ddev-claude-code
+
+ddev_version_constraint: '>= v1.23.5'
+
+dependencies:
+  - trebormc/ddev-playwright-mcp
+  - trebormc/ddev-beads
+  - trebormc/ddev-agents-sync
+
+pre_install_actions:
+  - |
+    #ddev-description:Checking prerequisites for Claude Code
+    echo "Installing ddev-claude-code add-on..."
+  - |
+    #ddev-description:Creating shared Claude Code config directory
+    CLAUDE_CONFIG_DIR="${HOME}/.ddev/claude-code"
+    if [ ! -d "$CLAUDE_CONFIG_DIR" ]; then
+      mkdir -p "$CLAUDE_CONFIG_DIR"
+      echo "Created shared config directory: $CLAUDE_CONFIG_DIR"
+    fi
+
+project_files:
+  - docker-compose.claude-code.yaml
+  - claude-code-build/Dockerfile.claude-code
+  - commands/host/claude-code
+
+global_files: []
+
+post_install_actions:
+  - |
+    #ddev-description:Configuring Claude Code environment
+    if [ ! -f .ddev/.env.claude-code ]; then
+      cat > .ddev/.env.claude-code << 'ENVEOF'
+    #ddev-generated
+    # Claude Code environment configuration
+
+    # Shared config directory for Claude Code credentials and settings.
+    # This directory is shared across ALL DDEV projects so you only
+    # need to authenticate once. Change only if you need a custom location.
+    HOST_CLAUDE_CONFIG_DIR=${HOME}/.ddev/claude-code
+
+    # Authentication: choose ONE method
+    #
+    # Option 1 — OAuth (recommended for Claude Pro/Team/Enterprise subscribers):
+    #   Run: ddev claude-code claude login
+    #   Credentials are saved in HOST_CLAUDE_CONFIG_DIR and shared across projects.
+    #
+    # Option 2 — API key:
+    #   Uncomment and set your Anthropic API key below.
+    #ANTHROPIC_API_KEY=sk-ant-...
+
+    # Timezone
+    TZ=UTC
+    ENVEOF
+      echo "Created .ddev/.env.claude-code — review auth options in .ddev/.env.claude-code"
+    else
+      echo ".ddev/.env.claude-code already exists, skipping"
+    fi
+    chmod +x .ddev/commands/host/claude-code
+  - |
+    #ddev-description:Validating Claude Code config directory
+    # Source the env file to get HOST_CLAUDE_CONFIG_DIR
+    if [ -f .ddev/.env.claude-code ]; then
+      eval "$(grep '^[[:space:]]*HOST_CLAUDE_CONFIG_DIR=' .ddev/.env.claude-code)"
+    fi
+    CLAUDE_DIR="${HOST_CLAUDE_CONFIG_DIR:-${HOME}/.ddev/claude-code}"
+    if [ ! -d "$CLAUDE_DIR" ]; then
+      mkdir -p "$CLAUDE_DIR"
+      echo "Created config directory: $CLAUDE_DIR"
+    fi
+    # Create default settings.json — bypass all permission prompts (isolated container)
+    SETTINGS_FILE="$CLAUDE_DIR/settings.json"
+    if [ ! -f "$SETTINGS_FILE" ]; then
+      cat > "$SETTINGS_FILE" << 'SETTINGSEOF'
+    {
+      "permissions": {
+        "defaultMode": "bypassPermissions"
+      }
+    }
+    SETTINGSEOF
+      echo "Created default permissions in $SETTINGS_FILE"
+    fi
+    echo ""
+    echo "Authentication setup:"
+    echo "  OAuth login:  ddev claude-code claude login"
+    echo "  API key:      edit .ddev/.env.claude-code"
+    echo ""
+
+removal_actions:
+  - |
+    #ddev-description:Cleaning up Claude Code
+    echo "Claude Code add-on removed."

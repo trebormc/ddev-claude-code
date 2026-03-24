@@ -1,0 +1,65 @@
+#ddev-generated
+# Claude Code AI container for DDEV
+# Provides Anthropic's Claude Code CLI with access to web container
+# Install: ddev add-on get trebormc/ddev-claude-code
+
+services:
+  claude-code:
+    container_name: ddev-${DDEV_SITENAME}-claude-code
+    hostname: claude-code
+    build:
+      context: .
+      dockerfile: claude-code-build/Dockerfile.claude-code
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: ${DDEV_APPROOT}
+    restart: "no"
+    user: "${DDEV_UID:-1000}:${DDEV_GID:-1000}"
+    working_dir: /var/www/html
+
+    depends_on:
+      - web
+      - playwright-mcp
+      - beads
+      - agents-sync
+
+    volumes:
+      - ../:/var/www/html
+      - agents-data:/agents:ro
+      - ${HOST_CLAUDE_CONFIG_DIR}:/home/claude/.claude
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ddev-global-cache:/mnt/ddev-global-cache
+
+    environment:
+      - DDEV_SITENAME
+      - DDEV_PRIMARY_URL
+      - DDEV_DOCROOT
+      - IS_DDEV_PROJECT=true
+      - WEB_CONTAINER=ddev-${DDEV_SITENAME}-web
+      - DB_CONTAINER=ddev-${DDEV_SITENAME}-db
+      - PLAYWRIGHT_MCP_URL=http://playwright-mcp:8931/mcp
+      - BEADS_CONTAINER=ddev-${DDEV_SITENAME}-beads
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - TZ=${TZ:-UTC}
+      - VIRTUAL_HOST=${DDEV_HOSTNAME}
+
+    stdin_open: true
+    tty: true
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    networks:
+      - default
+      - ddev_default
+
+networks:
+  ddev_default:
+    name: ddev_default
+    external: true
+
+volumes:
+  agents-data:
+    name: ddev-${DDEV_SITENAME}-agents
+  ddev-global-cache:
+    external: true
