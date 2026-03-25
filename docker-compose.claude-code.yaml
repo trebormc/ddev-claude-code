@@ -25,7 +25,7 @@ services:
 
     volumes:
       - ../:/var/www/html
-      - agents-data:/agents:ro
+      - agents-claude-data:/agents-claude:ro
       - ${HOST_CLAUDE_CONFIG_DIR}:/home/claude/.claude
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ddev-global-cache:/mnt/ddev-global-cache
@@ -59,7 +59,7 @@ networks:
     external: true
 
 volumes:
-  agents-data:
-    name: ddev-${DDEV_SITENAME}-agents
+  agents-claude-data:
+    name: ddev-${DDEV_SITENAME}-agents-claude
   ddev-global-cache:
     external: true

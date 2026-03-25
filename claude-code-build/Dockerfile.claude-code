@@ -89,9 +89,15 @@ RUN echo 'export PATH="${HOME}/.npm-global/bin:${PATH}"' >> ~/.bashrc \
     && echo 'echo ""' >> ~/.bashrc \
     && echo 'echo "Commands: claude | drush | phpunit | phpstan | web-shell | bd"' >> ~/.bashrc \
     && echo '' >> ~/.bashrc \
-    && echo '# Copy CLAUDE.md from synced agents to project root if not already present' >> ~/.bashrc \
-    && echo 'if [ ! -f "/var/www/html/CLAUDE.md" ] && [ -f "/agents/CLAUDE.md" ]; then' >> ~/.bashrc \
-    && echo '  cp /agents/CLAUDE.md /var/www/html/CLAUDE.md 2>/dev/null || true' >> ~/.bashrc \
+    && echo '# Set up agents and config from synced Claude Code volume' >> ~/.bashrc \
+    && echo 'if [ -d "/agents-claude" ]; then' >> ~/.bashrc \
+    && echo '  # Symlink agents to project .claude/agents/' >> ~/.bashrc \
+    && echo '  mkdir -p /var/www/html/.claude' >> ~/.bashrc \
+    && echo '  ln -sfn /agents-claude/agent /var/www/html/.claude/agents' >> ~/.bashrc \
+    && echo '  # Copy CLAUDE.md to project root if not already present' >> ~/.bashrc \
+    && echo '  if [ ! -f "/var/www/html/CLAUDE.md" ] && [ -f "/agents-claude/CLAUDE.md" ]; then' >> ~/.bashrc \
+    && echo '    cp /agents-claude/CLAUDE.md /var/www/html/CLAUDE.md 2>/dev/null || true' >> ~/.bashrc \
+    && echo '  fi' >> ~/.bashrc \
     && echo 'fi' >> ~/.bashrc
 
 WORKDIR /var/www/html
