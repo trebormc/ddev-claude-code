@@ -88,16 +88,28 @@ RUN echo 'export PATH="${HOME}/.npm-global/bin:${PATH}"' >> ~/.bashrc \
     && echo 'echo "   Site URL: \$DDEV_PRIMARY_URL"' >> ~/.bashrc \
     && echo 'echo ""' >> ~/.bashrc \
     && echo 'echo "Commands: claude | drush | phpunit | phpstan | web-shell | bd"' >> ~/.bashrc \
-    && echo '' >> ~/.bashrc \
-    && echo '# Set up agents and config from synced Claude Code volume' >> ~/.bashrc \
-    && echo 'if [ -d "/agents-claude" ]; then' >> ~/.bashrc \
-    && echo '  # Symlink agents to project .claude/agents/' >> ~/.bashrc \
-    && echo '  mkdir -p /var/www/html/.claude' >> ~/.bashrc \
-    && echo '  ln -sfn /agents-claude/agent /var/www/html/.claude/agents' >> ~/.bashrc \
-    && echo '  # Copy CLAUDE.md to project root if not already present' >> ~/.bashrc \
-    && echo '  if [ ! -f "/var/www/html/CLAUDE.md" ] && [ -f "/agents-claude/CLAUDE.md" ]; then' >> ~/.bashrc \
-    && echo '    cp /agents-claude/CLAUDE.md /var/www/html/CLAUDE.md 2>/dev/null || true' >> ~/.bashrc \
-    && echo '  fi' >> ~/.bashrc \
-    && echo 'fi' >> ~/.bashrc
+    && echo '' >> ~/.bashrc
+
+# Create entrypoint script that sets up agents before running the main command
+RUN cat > /usr/local/bin/entrypoint.sh << 'ENTRY'
+#!/bin/bash
+
+# Set up agents and config from synced Claude Code volume
+if [ -d "/agents-claude" ]; then
+  # Symlink agents to project .claude/agents/
+  mkdir -p /var/www/html/.claude
+  ln -sfn /agents-claude/agent /var/www/html/.claude/agents
+
+  # Copy CLAUDE.md to project root if not already present
+  if [ ! -f "/var/www/html/CLAUDE.md" ] && [ -f "/agents-claude/CLAUDE.md" ]; then
+    cp /agents-claude/CLAUDE.md /var/www/html/CLAUDE.md 2>/dev/null || true
+  fi
+fi
+
+exec "$@"
+ENTRY
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 WORKDIR /var/www/html

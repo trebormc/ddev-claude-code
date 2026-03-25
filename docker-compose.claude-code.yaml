@@ -43,6 +43,7 @@ services:
       - TZ=${TZ:-UTC}
       - VIRTUAL_HOST=${DDEV_HOSTNAME}
 
+    command: ["sleep", "infinity"]
     stdin_open: true
     tty: true
 
