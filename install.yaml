@@ -68,17 +68,25 @@ post_install_actions:
       mkdir -p "$CLAUDE_DIR"
       echo "Created config directory: $CLAUDE_DIR"
     fi
-    # Create default settings.json — bypass all permission prompts (isolated container)
+    # Create default settings.json — bypass permissions (isolated container) + MCP
     SETTINGS_FILE="$CLAUDE_DIR/settings.json"
     if [ ! -f "$SETTINGS_FILE" ]; then
       cat > "$SETTINGS_FILE" << 'SETTINGSEOF'
     {
       "permissions": {
         "defaultMode": "bypassPermissions"
+      },
+      "mcpServers": {
+        "playwright": {
+          "type": "url",
+          "url": "http://playwright-mcp:8931/mcp"
+        }
       }
     }
     SETTINGSEOF
-      echo "Created default permissions in $SETTINGS_FILE"
+      echo "Created default settings in $SETTINGS_FILE"
+    else
+      echo "Settings already exist in $SETTINGS_FILE"
     fi
     echo ""
     echo "Authentication setup:"
