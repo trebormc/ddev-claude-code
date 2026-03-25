@@ -19,4 +19,25 @@ if [ -d "/agents-claude" ]; then
   fi
 fi
 
+# Register Playwright MCP server if available
+# This makes browser tools (browser_navigate, browser_take_screenshot, etc.)
+# available as native Claude Code tools — no manual SSE protocol needed.
+if [ -n "$PLAYWRIGHT_MCP_URL" ]; then
+  SETTINGS_FILE="/var/www/html/.claude/settings.local.json"
+  mkdir -p /var/www/html/.claude
+
+  if [ -f "$SETTINGS_FILE" ]; then
+    # Merge mcpServers into existing settings (preserve other config)
+    jq --arg url "$PLAYWRIGHT_MCP_URL" \
+      '.mcpServers.playwright = {"type": "url", "url": $url}' \
+      "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp" \
+      && mv "${SETTINGS_FILE}.tmp" "$SETTINGS_FILE"
+  else
+    # Create new settings with MCP config
+    jq -n --arg url "$PLAYWRIGHT_MCP_URL" \
+      '{"mcpServers": {"playwright": {"type": "url", "url": $url}}}' \
+      > "$SETTINGS_FILE"
+  fi
+fi
+
 exec "$@"
