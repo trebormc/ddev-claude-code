@@ -22,6 +22,7 @@ pre_install_actions:
 project_files:
   - docker-compose.claude-code.yaml
   - claude-code-build/Dockerfile.claude-code
+  - claude-code-build/entrypoint.sh
   - commands/host/claude-code
 
 global_files: []
