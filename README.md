@@ -134,17 +134,28 @@ Inside the container (via `ddev claude-code shell`), these helper functions are 
 | `web-shell` | Open an interactive shell in the web container |
 | `bd` | Run Beads task tracking commands |
 
-## CLAUDE.md Integration
+## Agents and CLAUDE.md
 
-Claude Code uses `CLAUDE.md` files for project-specific instructions. When [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) is installed (auto-installed as dependency), a `CLAUDE.md` with Drupal development instructions is automatically provided from the synced agents repository.
+When [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) is installed (auto-installed as dependency), Claude Code automatically gets:
 
-You can also place your own `CLAUDE.md` in your Drupal project root to override or extend the default instructions.
+- **13 specialized agents** in `.claude/agents/` (drupal-dev, three-judges, etc.)
+- **CLAUDE.md** with Drupal development instructions in the project root
+- **Rules and skills** for Drupal development workflows
 
-To customize which agent repositories are synced (e.g., add a private repo with project-specific instructions), edit `.ddev/.env.agents-sync`:
+Agent `.md` files use model tokens (like `${MODEL_CHEAP}`) that are resolved to Claude Code aliases (like `haiku`) during sync. See [drupal-ai-agents](https://github.com/trebormc/drupal-ai-agents) for the full list of agents, tokens, and customization options.
+
+You can place your own `CLAUDE.md` in your Drupal project root -- it won't be overwritten if it already exists.
+
+### Customizing agents and models
+
+To add private agents or change which models agents use, edit `.ddev/.env.agents-sync`:
 
 ```bash
+# Add a private repo with custom agents or model overrides
 AGENTS_REPOS=https://github.com/trebormc/drupal-ai-agents.git,https://github.com/your-org/private-agents.git
 ```
+
+See [Model Token System](https://github.com/trebormc/ddev-agents-sync#model-token-system) for details on changing agent models globally.
 
 ## Desktop Notifications
 
