@@ -6,9 +6,9 @@
 # Runs before the main command on every container start.
 # Sets up: agents, skills, rules, CLAUDE.md, and Playwright MCP registration.
 #
-# Config hierarchy (Claude Code):
-#   ~/.claude/settings.json          → user-level (shared dir, all projects)
-#   <project>/.claude/settings.local.json → project-level (per Drupal project)
+# Config hierarchy (Claude Code in DDEV):
+#   ~/.ddev/claude-code/settings.json       → user-level (shared, all projects)
+#   <project>/.claude/settings.local.json   → project-level (per Drupal project)
 # =============================================================================
 
 CLAUDE_HOME="/home/claude/.claude"
