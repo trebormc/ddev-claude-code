@@ -29,9 +29,8 @@ global_files: []
 post_install_actions:
   - |
     #ddev-description:Configuring Claude Code environment
-    mkdir -p .ddev
-    if [ ! -f .ddev/.env.claude-code ]; then
-      cat > .ddev/.env.claude-code << 'ENVEOF'
+    if [ ! -f .env.claude-code ]; then
+      cat > .env.claude-code << 'ENVEOF'
     #ddev-generated
     # Claude Code environment configuration
 
@@ -53,15 +52,15 @@ post_install_actions:
     # Timezone
     TZ=UTC
     ENVEOF
-      echo "Created .ddev/.env.claude-code — review auth options in .ddev/.env.claude-code"
+      echo "Created .env.claude-code — review auth options in .ddev/.env.claude-code"
     else
-      echo ".ddev/.env.claude-code already exists, skipping"
+      echo ".env.claude-code already exists, skipping"
     fi
   - |
     #ddev-description:Validating Claude Code config directory
     # Source the env file to get HOST_CLAUDE_CONFIG_DIR
-    if [ -f .ddev/.env.claude-code ]; then
-      eval "$(grep '^[[:space:]]*HOST_CLAUDE_CONFIG_DIR=' .ddev/.env.claude-code)"
+    if [ -f .env.claude-code ]; then
+      eval "$(grep '^[[:space:]]*HOST_CLAUDE_CONFIG_DIR=' .env.claude-code)"
     fi
     CLAUDE_DIR="${HOST_CLAUDE_CONFIG_DIR:-${HOME}/.ddev/claude-code}"
     if [ ! -d "$CLAUDE_DIR" ]; then
@@ -83,7 +82,7 @@ post_install_actions:
     echo ""
     echo "Authentication setup:"
     echo "  OAuth login:  ddev claude-code claude login"
-    echo "  API key:      edit .ddev/.env.claude-code"
+    echo "  API key:      edit .ddev/.env.claude-code (inside .ddev/)"
     echo ""
 
 removal_actions:
