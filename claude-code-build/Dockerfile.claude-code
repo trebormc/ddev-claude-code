@@ -90,15 +90,22 @@ RUN echo 'export PATH="${HOME}/.npm-global/bin:${PATH}"' >> ~/.bashrc \
     && echo 'echo "Commands: claude | drush | phpunit | phpstan | web-shell | bd"' >> ~/.bashrc \
     && echo '' >> ~/.bashrc
 
-# Create entrypoint script that sets up agents before running the main command
+# Create entrypoint script that sets up agents and skills before running the main command
 RUN cat > /usr/local/bin/entrypoint.sh << 'ENTRY'
 #!/bin/bash
 
-# Set up agents and config from synced Claude Code volume
+# Set up agents, skills, and config from synced Claude Code volume
 if [ -d "/agents-claude" ]; then
-  # Symlink agents to project .claude/agents/
   mkdir -p /var/www/html/.claude
-  ln -sfn /agents-claude/agent /var/www/html/.claude/agents
+
+  # Symlink agents to .claude/agents/
+  [ -d "/agents-claude/agent" ] && ln -sfn /agents-claude/agent /var/www/html/.claude/agents
+
+  # Symlink skills to .claude/skills/ (both Claude Code and OpenCode discover this path)
+  [ -d "/agents-claude/skills" ] && ln -sfn /agents-claude/skills /var/www/html/.claude/skills
+
+  # Symlink rules to .claude/rules/
+  [ -d "/agents-claude/rules" ] && ln -sfn /agents-claude/rules /var/www/html/.claude/rules
 
   # Copy CLAUDE.md to project root if not already present
   if [ ! -f "/var/www/html/CLAUDE.md" ] && [ -f "/agents-claude/CLAUDE.md" ]; then
