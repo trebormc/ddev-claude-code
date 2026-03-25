@@ -33,7 +33,10 @@ ddev add-on get trebormc/ddev-claude-code
 ddev restart
 ```
 
-This automatically installs [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp) (browser automation) and [ddev-beads](https://github.com/trebormc/ddev-beads) (task tracking) as dependencies.
+This automatically installs all dependencies:
+- [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) -- auto-syncs AI agents from git (provides CLAUDE.md)
+- [ddev-beads](https://github.com/trebormc/ddev-beads) -- task tracking
+- [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp) -- browser automation
 
 ## Authentication
 
@@ -133,27 +136,15 @@ Inside the container (via `ddev claude-code shell`), these helper functions are 
 
 ## CLAUDE.md Integration
 
-Claude Code uses `CLAUDE.md` files for project-specific instructions. Place a `CLAUDE.md` in your Drupal project root and it will be automatically picked up.
+Claude Code uses `CLAUDE.md` files for project-specific instructions. When [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) is installed (auto-installed as dependency), a `CLAUDE.md` with Drupal development instructions is automatically provided from the synced agents repository.
 
-Example for a Drupal project:
+You can also place your own `CLAUDE.md` in your Drupal project root to override or extend the default instructions.
 
-```markdown
-# Project Instructions
+To customize which agent repositories are synced (e.g., add a private repo with project-specific instructions), edit `.ddev/.env.agents-sync`:
 
-## Environment
-- Run PHP commands via: docker exec $WEB_CONTAINER <command>
-- Playwright MCP at: http://playwright-mcp:8931/mcp
-
-## Drupal Standards
-- Drupal coding standards (2-space indent, strict_types)
-- Dependency injection only -- never use \Drupal::service() in classes
-- Run quality checks:
-  - docker exec $WEB_CONTAINER ./vendor/bin/phpcs --standard=Drupal,DrupalPractice web/modules/custom
-  - docker exec $WEB_CONTAINER ./vendor/bin/phpstan analyse web/modules/custom --level=8
-  - docker exec $WEB_CONTAINER ./vendor/bin/phpunit web/modules/custom
+```bash
+AGENTS_REPOS=https://github.com/trebormc/drupal-ai-agents.git,https://github.com/your-org/private-agents.git
 ```
-
-For a comprehensive set of Drupal development instructions, see [drupal-ai-agents](https://github.com/trebormc/drupal-ai-agents) -- its rules and agent prompts are an excellent reference for writing your `CLAUDE.md`.
 
 ## Desktop Notifications
 
@@ -194,6 +185,7 @@ For autonomous task execution (overnight runs), see [ddev-ralph](https://github.
 - [drupal-ai-agents](https://github.com/trebormc/drupal-ai-agents) -- 13 agents, 4 rules, 14 skills for Drupal development
 - [ddev-opencode](https://github.com/trebormc/ddev-opencode) -- Alternative: OpenCode AI for DDEV
 - [ddev-ralph](https://github.com/trebormc/ddev-ralph) -- Autonomous task runner
+- [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) -- Agents auto-sync from git (auto-installed)
 - [ddev-beads](https://github.com/trebormc/ddev-beads) -- Beads task tracker (auto-installed)
 - [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp) -- Playwright browser automation (auto-installed)
 
