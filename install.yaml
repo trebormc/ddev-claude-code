@@ -29,6 +29,7 @@ global_files: []
 post_install_actions:
   - |
     #ddev-description:Configuring Claude Code environment
+    mkdir -p .ddev
     if [ ! -f .ddev/.env.claude-code ]; then
       cat > .ddev/.env.claude-code << 'ENVEOF'
     #ddev-generated
