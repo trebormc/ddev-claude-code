@@ -25,7 +25,33 @@ services:
 
     volumes:
       - ../:/var/www/html
-      - agents-claude-data:/agents-claude:ro
+      # Agents, skills, rules — mounted directly from agents-sync volume
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/.claude/agents
+        volume:
+          subpath: agent
+        read_only: true
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/.claude/skills
+        volume:
+          subpath: skills
+        read_only: true
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/.claude/rules
+        volume:
+          subpath: rules
+        read_only: true
+      # CLAUDE.md from agents-sync (default project instructions)
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/CLAUDE.md
+        volume:
+          subpath: CLAUDE.md
+        read_only: true
+      # Shared config — credentials and settings (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}:/home/claude/.claude
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ddev-global-cache:/mnt/ddev-global-cache
