@@ -76,6 +76,14 @@ post_install_actions:
       echo '{}' > "$CLAUDE_JSON"
       echo "Created .claude.json — first launch will run the onboarding wizard"
     fi
+    # Create empty .credentials.json if missing.
+    # Docker requires the file to exist before mounting, otherwise it creates a directory.
+    # The onboarding wizard will populate it with OAuth tokens on first login.
+    CREDENTIALS_FILE="$CLAUDE_DIR/.credentials.json"
+    if [ ! -f "$CREDENTIALS_FILE" ]; then
+      echo '{}' > "$CREDENTIALS_FILE"
+      echo "Created .credentials.json — will be populated on first login"
+    fi
     # Create default settings.json — bypass permissions (isolated container) + MCP
     SETTINGS_FILE="$CLAUDE_DIR/settings.json"
     if [ ! -f "$SETTINGS_FILE" ]; then

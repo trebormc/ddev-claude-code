@@ -51,8 +51,10 @@ services:
         volume:
           subpath: CLAUDE.md
         read_only: true
-      # Shared config — credentials, settings, and user state (read-write)
-      - ${HOST_CLAUDE_CONFIG_DIR}:/home/claude/.claude
+      # Shared config — only credentials and settings (read-write)
+      - ${HOST_CLAUDE_CONFIG_DIR}/settings.json:/home/claude/.claude/settings.json
+      - ${HOST_CLAUDE_CONFIG_DIR}/.credentials.json:/home/claude/.claude/.credentials.json
+      # Shared user state — onboarding, theme, account (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}/.claude.json:/home/claude/.claude.json
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ddev-global-cache:/mnt/ddev-global-cache
