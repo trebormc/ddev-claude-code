@@ -68,6 +68,18 @@ post_install_actions:
       mkdir -p "$CLAUDE_DIR"
       echo "Created config directory: $CLAUDE_DIR"
     fi
+    # Create .claude.json (user state: onboarding, theme, account) if missing.
+    # If the user already has ~/.claude.json from a local install, copy it.
+    CLAUDE_JSON="$CLAUDE_DIR/.claude.json"
+    if [ ! -f "$CLAUDE_JSON" ]; then
+      if [ -f "${HOME}/.claude.json" ]; then
+        cp "${HOME}/.claude.json" "$CLAUDE_JSON"
+        echo "Copied existing ~/.claude.json to shared config"
+      else
+        echo '{}' > "$CLAUDE_JSON"
+        echo "Created empty .claude.json in shared config"
+      fi
+    fi
     # Create default settings.json — bypass permissions (isolated container) + MCP
     SETTINGS_FILE="$CLAUDE_DIR/settings.json"
     if [ ! -f "$SETTINGS_FILE" ]; then
