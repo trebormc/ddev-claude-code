@@ -1,4 +1,5 @@
 #!/bin/bash
+#ddev-generated
 
 # =============================================================================
 # Claude Code DDEV Entrypoint
