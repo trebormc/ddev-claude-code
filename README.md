@@ -181,20 +181,26 @@ AGENTS_REPOS=https://github.com/trebormc/drupal-ai-agents.git,https://github.com
 
 See [Model Token System](https://github.com/trebormc/ddev-agents-sync#model-token-system) for details on changing agent models globally.
 
-## Desktop Notifications
+## Desktop Notifications (optional)
 
-Claude Code can send desktop notifications when sessions finish. Add a stop hook to `.claude/settings.json`:
+Claude Code can send desktop notifications when sessions finish. First, install the [ai-notify-bridge](https://github.com/trebormc/ai-notify-bridge) on your host (one-time setup):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/trebormc/ai-notify-bridge/main/install.sh | bash
+```
+
+Then add a stop hook to `~/.ddev/claude-code/settings.json`:
 
 ```json
 {
   "hooks": {
-    "stop": [
+    "Stop": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "curl -s -X POST http://host.docker.internal:5454/notify -H 'Content-Type: application/json' -d '{\"title\":\"Claude Code\",\"message\":\"Session finished\"}'"
+            "command": "curl -s --connect-timeout 1 -X POST http://host.docker.internal:5454/notify -H 'Content-Type: application/json' -d '{\"title\":\"Claude Code\",\"message\":\"Session finished\"}'"
           }
         ]
       }
@@ -203,13 +209,7 @@ Claude Code can send desktop notifications when sessions finish. Add a stop hook
 }
 ```
 
-Then start the notification bridge on your host:
-
-```bash
-./scripts/start-notify-bridge.sh
-```
-
-See the [DDEV AI workspace](https://github.com/trebormc/ddev-ai-workspace) for full notification setup details.
+If the bridge is not installed or not running, the curl call fails silently with no impact on Claude Code.
 
 ## Autonomous Execution
 
