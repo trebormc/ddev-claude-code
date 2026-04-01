@@ -29,16 +29,16 @@ case "$1" in
         CUSTOM_TITLE="$*"
         set_tab_title "$CUSTOM_TITLE"
         trap restore_tab_title EXIT
-        docker exec -it -e CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 "$CLAUDE_CONTAINER" claude
+        docker exec -it -u claude -e CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 "$CLAUDE_CONTAINER" claude
         ;;
     "shell"|"bash")
         set_tab_title "shell"
         trap restore_tab_title EXIT
-        docker exec -it "$CLAUDE_CONTAINER" bash
+        docker exec -it -u claude "$CLAUDE_CONTAINER" bash
         ;;
     *)
         set_tab_title "$1"
         trap restore_tab_title EXIT
-        docker exec -it "$CLAUDE_CONTAINER" "$@"
+        docker exec -it -u claude "$CLAUDE_CONTAINER" "$@"
         ;;
 esac
