@@ -36,18 +36,9 @@ This automatically installs all dependencies:
 
 ## Authentication
 
-Credentials are stored in a shared directory on the host (`~/.ddev/claude-code/` by default), so you only need to authenticate **once** -- all your DDEV projects share the same session automatically.
+Run `ddev claude-code` and follow the prompts. Claude Code handles OAuth and API key authentication natively -- no custom commands or manual file editing needed.
 
-**Option A: Interactive authentication (recommended)**
-
-Run `ddev claude-code` and follow the prompts. Claude Code handles OAuth and API key authentication natively. Credentials are stored in the shared config directory and persist across `ddev restart`, new projects, and machine reboots.
-
-**Option B: API key via environment variable**
-
-```bash
-ddev dotenv set .ddev/.env.claude-code --anthropic-api-key=sk-ant-your-key-here
-ddev restart
-```
+Credentials are stored in a shared directory on the host (`~/.ddev/claude-code/` by default), so you only need to authenticate **once** -- all your DDEV projects share the same session automatically. Credentials persist across `ddev restart`, new projects, and machine reboots.
 
 ## Configuration
 
@@ -57,9 +48,6 @@ After installation, environment variables are in `.ddev/.env.claude-code`:
 # Shared config directory -- credentials, settings, and session data.
 # Shared across ALL DDEV projects. Change only if you need a custom location.
 HOST_CLAUDE_CONFIG_DIR=${HOME}/.ddev/claude-code
-
-# API key (alternative to OAuth login)
-#ANTHROPIC_API_KEY=sk-ant-...
 
 # Timezone
 TZ=UTC

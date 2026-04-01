@@ -68,7 +68,6 @@ services:
       - DB_CONTAINER=ddev-${DDEV_SITENAME}-db
       - PLAYWRIGHT_MCP_URL=http://playwright-mcp:8931/mcp
       - BEADS_CONTAINER=ddev-${DDEV_SITENAME}-beads
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - TZ=${TZ:-UTC}
       - VIRTUAL_HOST=${DDEV_HOSTNAME}
 
