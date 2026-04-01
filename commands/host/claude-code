@@ -8,8 +8,6 @@
 
 CLAUDE_CONTAINER="ddev-${DDEV_SITENAME}-claude-code"
 
-TITLE_PID=""
-
 set_tab_title() {
     local custom_title="$1"
     if [ -n "$custom_title" ]; then
@@ -19,21 +17,7 @@ set_tab_title() {
     fi
 }
 
-# Keep refreshing the tab title so Claude Code cannot overwrite it.
-# Writes OSC escape sequences directly to /dev/tty to avoid interfering
-# with the TUI output stream.
-lock_tab_title() {
-    local title="$1"
-    if [ -n "$title" ]; then
-        (while true; do printf '\033]0;%s - %s\007' "${DDEV_SITENAME}" "$title" > /dev/tty; sleep 2; done) &
-    else
-        (while true; do printf '\033]0;%s - Claude Code\007' "${DDEV_SITENAME}" > /dev/tty; sleep 2; done) &
-    fi
-    TITLE_PID=$!
-}
-
 restore_tab_title() {
-    [ -n "$TITLE_PID" ] && kill "$TITLE_PID" 2>/dev/null
     printf '\033]0;%s\007' "${TERM_PROGRAM:-Terminal}"
 }
 
@@ -44,9 +28,8 @@ case "$1" in
         fi
         CUSTOM_TITLE="$*"
         set_tab_title "$CUSTOM_TITLE"
-        lock_tab_title "$CUSTOM_TITLE"
         trap restore_tab_title EXIT
-        docker exec -it "$CLAUDE_CONTAINER" claude
+        docker exec -it -e CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 "$CLAUDE_CONTAINER" claude
         ;;
     "shell"|"bash")
         set_tab_title "shell"
