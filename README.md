@@ -181,25 +181,9 @@ Claude Code can send desktop notifications when sessions finish. First, install 
 curl -fsSL https://raw.githubusercontent.com/trebormc/ai-notify-bridge/main/install.sh | bash
 ```
 
-Then add a stop hook to `~/.ddev/claude-code/settings.json`:
+Notification hooks are pre-configured in `settings.json` when you install the add-on. They include the project name and TUI task label automatically. Example notification title: `[mysite] Fix login bug`.
 
-```json
-{
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "curl -s --connect-timeout 1 -X POST http://host.docker.internal:5454/notify -H 'Content-Type: application/json' -d '{\"title\":\"Claude Code\",\"message\":\"Session finished\"}'"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+If you already have a `settings.json` from a previous install, add the hooks manually. See the [install.yaml](install.yaml) for the exact hook configuration.
 
 If the bridge is not installed or not running, the curl call fails silently with no impact on Claude Code.
 

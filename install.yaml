@@ -97,7 +97,18 @@ post_install_actions:
             "hooks": [
               {
                 "type": "command",
-                "command": "curl -s --connect-timeout 1 -X POST http://host.docker.internal:5454/notify -H 'Content-Type: application/json' -d '{\"title\":\"Claude Code\",\"message\":\"Session finished\"}'"
+                "command": "printf '{\"title\":\"[%s] %s\",\"message\":\"Session finished\"}' \"$DDEV_SITENAME\" \"${DDEV_TUI_TITLE:-Claude Code}\" | curl -s --connect-timeout 1 -X POST http://host.docker.internal:5454/notify -H 'Content-Type: application/json' -d @-"
+              }
+            ]
+          }
+        ],
+        "Notification": [
+          {
+            "matcher": "",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "printf '{\"title\":\"[%s] %s\",\"message\":\"Needs your attention\"}' \"$DDEV_SITENAME\" \"${DDEV_TUI_TITLE:-Claude Code}\" | curl -s --connect-timeout 1 -X POST http://host.docker.internal:5454/notify -H 'Content-Type: application/json' -d @-"
               }
             ]
           }
