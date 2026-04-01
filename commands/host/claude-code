@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #ddev-generated
-## Description: Access the Claude Code AI container (interactive, shell)
-## Usage: claude-code [shell|<command>]
-## Example: "ddev claude-code" for interactive mode, "ddev claude-code shell" for bash
+## Description: Access the Claude Code AI container (TUI or shell)
+## Usage: claude-code [tui [title...]|shell|command...]
+## Example: "ddev claude-code" for TUI, "ddev claude-code shell" for bash, "ddev claude-code <command>" to run a command
 ## ExecRaw: true
 
 CLAUDE_CONTAINER="ddev-${DDEV_SITENAME}-claude-code"
@@ -22,8 +22,12 @@ restore_tab_title() {
 }
 
 case "$1" in
-    "")
-        set_tab_title "Claude Code"
+    ""|"tui")
+        if [ "$1" = "tui" ]; then
+            shift
+        fi
+        CUSTOM_TITLE="$*"
+        set_tab_title "$CUSTOM_TITLE"
         trap restore_tab_title EXIT
         docker exec -it "$CLAUDE_CONTAINER" claude
         ;;

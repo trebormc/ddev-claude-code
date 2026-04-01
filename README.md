@@ -119,8 +119,32 @@ Claude Code communicates with the web container via `docker exec` (through the m
 | Command | Description |
 |---------|-------------|
 | `ddev claude-code` | Start Claude Code interactive session |
+| `ddev claude-code tui` | Start interactive session (same as above) |
+| `ddev claude-code tui Fix login bug` | Start interactive session with a custom tab title |
 | `ddev claude-code shell` | Open a bash shell in the container |
 | `ddev claude-code <command>` | Run any command in the container |
+
+### Tab title for multi-project workflows
+
+When working on multiple DDEV projects at the same time, it can be hard to tell which terminal belongs to which project. The `tui` subcommand sets the terminal tab title to **`project-name - custom text`**, so you can identify each terminal at a glance.
+
+The project name (`DDEV_SITENAME`) is always included automatically. If you add extra text after `tui`, it appears as a label -- useful for describing the task you are working on in that terminal.
+
+```bash
+# Tab title: "mysite - Claude Code"
+ddev claude-code
+
+# Tab title: "mysite - Claude Code"  (explicit tui, same result)
+ddev claude-code tui
+
+# Tab title: "mysite - Fix login redirect bug"
+ddev claude-code tui Fix login redirect bug
+
+# Tab title: "mysite - TASK-42 migrate users"
+ddev claude-code tui TASK-42 migrate users
+```
+
+This way, if you have three terminals open (two projects, two tasks), each tab shows exactly where you are and what you are doing.
 
 ### Shell Helpers
 
