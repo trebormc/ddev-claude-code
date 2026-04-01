@@ -40,14 +40,10 @@ post_install_actions:
     # need to authenticate once. Change only if you need a custom location.
     HOST_CLAUDE_CONFIG_DIR=${HOME}/.ddev/claude-code
 
-    # Authentication: choose ONE method
-    #
-    # Option 1 — OAuth (recommended for Claude Pro/Team/Enterprise subscribers):
-    #   Run: ddev claude-code claude login
-    #   Credentials are saved in HOST_CLAUDE_CONFIG_DIR and shared across projects.
-    #
-    # Option 2 — API key:
-    #   Uncomment and set your Anthropic API key below.
+    # Authentication:
+    # Claude Code uses standard authentication (OAuth or API key).
+    # Run "ddev claude-code" and follow the prompts to authenticate,
+    # or set your API key below.
     #ANTHROPIC_API_KEY=sk-ant-...
 
     # Timezone
@@ -114,9 +110,8 @@ post_install_actions:
       echo "Settings already exist in $SETTINGS_FILE"
     fi
     echo ""
-    echo "Authentication setup:"
-    echo "  OAuth login:  ddev claude-code claude login"
-    echo "  API key:      edit .ddev/.env.claude-code (inside .ddev/)"
+    echo "Authentication: run 'ddev claude-code' and follow the prompts,"
+    echo "or set ANTHROPIC_API_KEY in .ddev/.env.claude-code"
     echo ""
 
 removal_actions:

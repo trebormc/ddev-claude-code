@@ -13,11 +13,7 @@ ddev add-on get trebormc/ddev-claude-code
 # 2. Restart DDEV
 ddev restart
 
-# 3. Authenticate (choose one)
-ddev claude-code claude login          # OAuth (recommended)
-# OR set API key in .ddev/.env.claude-code
-
-# 4. Launch Claude Code
+# 3. Launch Claude Code (authenticate on first run)
 ddev claude-code
 ```
 
@@ -42,15 +38,11 @@ This automatically installs all dependencies:
 
 Credentials are stored in a shared directory on the host (`~/.ddev/claude-code/` by default), so you only need to authenticate **once** -- all your DDEV projects share the same session automatically.
 
-**Option A: OAuth login (recommended for Claude Pro/Team/Enterprise subscribers)**
+**Option A: Interactive authentication (recommended)**
 
-```bash
-ddev claude-code claude login
-```
+Run `ddev claude-code` and follow the prompts. Claude Code handles OAuth and API key authentication natively. Credentials are stored in the shared config directory and persist across `ddev restart`, new projects, and machine reboots.
 
-This opens a browser for OAuth authentication. Credentials persist across `ddev restart`, new projects, and machine reboots.
-
-**Option B: API key**
+**Option B: API key via environment variable**
 
 ```bash
 ddev dotenv set .ddev/.env.claude-code --anthropic-api-key=sk-ant-your-key-here
