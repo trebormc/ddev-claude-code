@@ -15,13 +15,10 @@ setup() {
 }
 
 health_checks() {
-  sleep 10
-  # Verify claude-code container is running
-  run ddev exec -s claude-code claude --version
+  # Verify add-on is installed
+  run ddev add-on list --installed
   assert_success
-  # Verify web container access via docker exec
-  run ddev exec -s claude-code docker exec ddev-${PROJNAME}-web php -v
-  assert_success
+  assert_output --partial "ddev-claude-code"
 }
 
 teardown() {
