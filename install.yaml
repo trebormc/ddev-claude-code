@@ -24,6 +24,7 @@ project_files:
   - claude-code-build/Dockerfile.claude-code
   - claude-code-build/entrypoint.sh
   - commands/host/claude-code
+  - commands/host/cc
 
 global_files: []
 
