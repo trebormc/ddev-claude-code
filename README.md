@@ -14,7 +14,7 @@ ddev add-on get trebormc/ddev-claude-code
 ddev restart
 
 # 3. Launch Claude Code (authenticate on first run)
-ddev claude-code
+ddev claude-code  # or: ddev cc
 ```
 
 ## Prerequisites
@@ -99,6 +99,7 @@ Claude Code communicates with the web container via `docker exec` (through the m
 | Command | Description |
 |---------|-------------|
 | `ddev claude-code` | Start Claude Code interactive session |
+| `ddev cc` | Alias for `ddev claude-code` |
 | `ddev claude-code tui` | Start interactive session (same as above) |
 | `ddev claude-code tui Fix login bug` | Start interactive session with a custom tab title |
 | `ddev claude-code shell` | Open a bash shell in the container |
@@ -178,6 +179,13 @@ If the bridge is not installed or not running, the curl call fails silently with
 ## Autonomous Execution
 
 For autonomous task execution (overnight runs), see [ddev-ralph](https://github.com/trebormc/ddev-ralph).
+
+## Uninstallation
+
+```bash
+ddev add-on remove ddev-claude-code
+ddev restart
+```
 
 ## Part of DDEV AI Workspace
 
