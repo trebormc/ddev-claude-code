@@ -30,7 +30,7 @@ services:
         source: agents-claude-data
         target: /var/www/html/.claude/agents
         volume:
-          subpath: agent
+          subpath: agents
         read_only: true
       - type: volume
         source: agents-claude-data
@@ -50,6 +50,13 @@ services:
         target: /var/www/html/CLAUDE.md
         volume:
           subpath: CLAUDE.md
+        read_only: true
+      # Project-level settings.json from agents-sync (permissions, hooks)
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/.claude/settings.json
+        volume:
+          subpath: .claude/settings.json
         read_only: true
       # Shared config — only credentials and settings (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}/settings.json:/home/claude/.claude/settings.json
