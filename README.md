@@ -4,6 +4,18 @@
 
 A DDEV add-on that runs [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (Anthropic's official CLI) in a dedicated container for AI-powered Drupal development.
 
+## Why this add-on?
+
+There are [several DDEV add-ons for Claude Code](https://addons.ddev.com/?search=claude) already available. This one was built for a specific use case and differs from the others in a few key ways:
+
+- **Multi-container orchestration.** Designed to work as part of a larger AI workspace where the Claude container connects to sibling containers: a Playwright container for browser testing, a Beads container for task tracking, and access to the web container for running drush, composer, phpunit, and phpstan directly against Drupal.
+- **Minimal and focused.** Does not bundle MCPs or extra tooling inside the container. External tools (Playwright, task tracking) run in their own dedicated containers, keeping the Claude container lightweight.
+- **TUI wrapper with tab titles.** Includes a terminal wrapper that sets custom tab titles (`project-name - task label`), which is useful when juggling multiple agents or projects across several terminals.
+- **Desktop notifications.** Supports optional host notifications (via [ai-notify-bridge](https://github.com/trebormc/ai-notify-bridge)) when sessions or tasks complete.
+- **Autonomous execution ready.** Pairs with [ddev-ralph](https://github.com/trebormc/ddev-ralph) for autonomous task loops (planning, executing, and closing tasks overnight).
+
+If you need a standalone Claude Code container without the multi-container setup, one of the [other add-ons](https://addons.ddev.com/?search=claude) may be a better fit.
+
 ## Quick Start
 
 ```bash
