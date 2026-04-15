@@ -67,6 +67,7 @@ services:
       - HOME=/home/claude
       - DDEV_SITENAME
       - DDEV_PRIMARY_URL
+      - DDEV_HTTP_URL=http://${DDEV_SITENAME}.ddev.site
       - DDEV_DOCROOT
       - IS_DDEV_PROJECT=true
       - WEB_CONTAINER=ddev-${DDEV_SITENAME}-web
