@@ -29,7 +29,26 @@ services:
 
     volumes:
       - ../:/var/www/html
-      # Agents volume from agents-sync (agents, skills, rules, CLAUDE.md)
+      # Agents, skills, rules from agents-sync volume (directory subpath mounts)
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/.claude/agents
+        volume:
+          subpath: agents
+        read_only: true
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/.claude/skills
+        volume:
+          subpath: skills
+        read_only: true
+      - type: volume
+        source: agents-claude-data
+        target: /var/www/html/.claude/rules
+        volume:
+          subpath: rules
+        read_only: true
+      # Full agents volume (for CLAUDE.md copy in entrypoint)
       - agents-claude-data:/agents-data:ro
       # Shared config — only credentials and settings (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}/settings.json:/home/claude/.claude/settings.json

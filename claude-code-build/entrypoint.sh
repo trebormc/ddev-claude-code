@@ -9,8 +9,9 @@
 # 1. Fixes Docker socket access (GID mismatch between host and container)
 # 2. Generates .mcp.json with Playwright MCP connection
 #
-# Agents volume is mounted at /agents-data (read-only). Symlinks are
-# created to the paths Claude Code expects on every start.
+# Agents directories are mounted via volume subpaths in docker-compose.
+# CLAUDE.md is copied from the volume in the entrypoint (file subpath
+# mounts fail on empty volumes because Docker resolves them at creation time).
 #
 # Config hierarchy (Claude Code in DDEV):
 #   ~/.ddev/claude-code/settings.json       → user-level (shared, all projects)
@@ -27,14 +28,11 @@ fi
 # Ensure .claude directory exists for config and MCP client cache
 mkdir -p "$HOME/.claude" 2>/dev/null || true
 
-# --- 1. Link agents, skills, rules, and CLAUDE.md from agents-sync volume ---
-AGENTS_DATA="/agents-data"
-if [ -d "$AGENTS_DATA" ]; then
-  mkdir -p /var/www/html/.claude
-  for dir in agents skills rules; do
-    [ -d "$AGENTS_DATA/$dir" ] && ln -sfn "$AGENTS_DATA/$dir" "/var/www/html/.claude/$dir"
-  done
-  [ -f "$AGENTS_DATA/CLAUDE.md" ] && ln -sf "$AGENTS_DATA/CLAUDE.md" /var/www/html/CLAUDE.md
+# --- 1. Copy CLAUDE.md from agents-sync volume ---
+# Directories (agents, skills, rules) are mounted via volume subpaths in docker-compose.
+# CLAUDE.md cannot use a file subpath mount (Docker fails on empty volumes), so we copy it.
+if [ -f "/agents-data/CLAUDE.md" ]; then
+  cp /agents-data/CLAUDE.md /var/www/html/CLAUDE.md
 fi
 
 # --- 2. Fix Docker socket access if needed ---
