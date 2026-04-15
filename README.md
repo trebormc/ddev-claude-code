@@ -41,9 +41,9 @@ ddev claude-code  # or: ddev cc
 ```
 
 This automatically installs the required dependencies:
-- [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) -- auto-syncs AI agents from git (provides CLAUDE.md)
-- [ddev-beads](https://github.com/trebormc/ddev-beads) -- task tracking
-- [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp) -- browser automation
+- [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync): auto-syncs AI agents from git (provides CLAUDE.md)
+- [ddev-beads](https://github.com/trebormc/ddev-beads): task tracking
+- [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp): browser automation
 
 ## Prerequisites
 
@@ -52,16 +52,16 @@ This automatically installs the required dependencies:
 
 ## Authentication
 
-Run `ddev claude-code` and follow the prompts. Claude Code handles OAuth and API key authentication natively -- no custom commands or manual file editing needed.
+Run `ddev claude-code` and follow the prompts. Claude Code handles OAuth and API key authentication natively. No custom commands or manual file editing needed.
 
-Credentials are stored in a shared directory on the host (`~/.ddev/claude-code/` by default), so you only need to authenticate **once** -- all your DDEV projects share the same session automatically. Credentials persist across `ddev restart`, new projects, and machine reboots.
+Credentials are stored in a shared directory on the host (`~/.ddev/claude-code/` by default), so you only need to authenticate **once**. All your DDEV projects share the same session automatically. Credentials persist across `ddev restart`, new projects, and machine reboots.
 
 ## Configuration
 
 After installation, environment variables are in `.ddev/.env.claude-code`:
 
 ```bash
-# Shared config directory -- credentials, settings, and session data.
+# Shared config directory (credentials, settings, and session data).
 # Shared across ALL DDEV projects. Change only if you need a custom location.
 HOST_CLAUDE_CONFIG_DIR=${HOME}/.ddev/claude-code
 
@@ -73,7 +73,7 @@ TZ=UTC
 
 ### Permissions
 
-The installer creates a default `settings.json` with `bypassPermissions` mode -- all permission prompts are disabled since Claude Code runs inside an isolated DDEV container.
+The installer creates a default `settings.json` with `bypassPermissions` mode. All permission prompts are disabled since Claude Code runs inside an isolated DDEV container.
 
 To change this, edit `~/.ddev/claude-code/settings.json`:
 
@@ -125,7 +125,7 @@ Claude Code communicates with the web container via `docker exec` (through the m
 
 When working on multiple DDEV projects at the same time, it can be hard to tell which terminal belongs to which project. The `tui` subcommand sets the terminal tab title to **`project-name - custom text`**, so you can identify each terminal at a glance.
 
-The project name (`DDEV_SITENAME`) is always included automatically. If you add extra text after `tui`, it appears as a label -- useful for describing the task you are working on in that terminal.
+The project name (`DDEV_SITENAME`) is always included automatically. If you add extra text after `tui`, it appears as a label. Useful for describing the task you are working on in that terminal.
 
 ```bash
 # Tab title: "mysite - Claude Code"
@@ -165,7 +165,7 @@ When [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) is install
 
 Agent `.md` files use model tokens (like `${MODEL_CHEAP}`) that are resolved to Claude Code aliases (like `haiku`) during sync. See [drupal-ai-agents](https://github.com/trebormc/drupal-ai-agents) for the full list of agents, tokens, and customization options.
 
-You can place your own `CLAUDE.md` in your Drupal project root -- it won't be overwritten if it already exists.
+You can place your own `CLAUDE.md` in your Drupal project root. It won't be overwritten if it already exists.
 
 ### Customizing agents and models
 
@@ -219,7 +219,7 @@ This add-on is part of [DDEV AI Workspace](https://github.com/trebormc/ddev-ai-w
 
 ## Disclaimer
 
-This project is an independent initiative by [Robert Menetray](https://menetray.com), sponsored by [DruScan](https://druscan.com). It is not affiliated with Anthropic, OpenCode, Beads, Playwright, Microsoft, or DDEV. AI-generated code may contain errors -- always review changes before deploying to production.
+This project is an independent initiative by [Robert Menetray](https://menetray.com), sponsored by [DruScan](https://druscan.com). It is not affiliated with Anthropic, OpenCode, Beads, Playwright, Microsoft, or DDEV. AI-generated code may contain errors. Always review changes before deploying to production.
 
 ## License
 
