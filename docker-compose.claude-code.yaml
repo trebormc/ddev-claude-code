@@ -29,32 +29,8 @@ services:
 
     volumes:
       - ../:/var/www/html
-      # Agents, skills, rules — mounted directly from agents-sync volume
-      - type: volume
-        source: agents-claude-data
-        target: /var/www/html/.claude/agents
-        volume:
-          subpath: agents
-        read_only: true
-      - type: volume
-        source: agents-claude-data
-        target: /var/www/html/.claude/skills
-        volume:
-          subpath: skills
-        read_only: true
-      - type: volume
-        source: agents-claude-data
-        target: /var/www/html/.claude/rules
-        volume:
-          subpath: rules
-        read_only: true
-      # CLAUDE.md from agents-sync (default project instructions)
-      - type: volume
-        source: agents-claude-data
-        target: /var/www/html/CLAUDE.md
-        volume:
-          subpath: CLAUDE.md
-        read_only: true
+      # Agents volume from agents-sync (agents, skills, rules, CLAUDE.md)
+      - agents-claude-data:/agents-data:ro
       # Shared config — only credentials and settings (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}/settings.json:/home/claude/.claude/settings.json
       - ${HOST_CLAUDE_CONFIG_DIR}/.credentials.json:/home/claude/.claude/.credentials.json

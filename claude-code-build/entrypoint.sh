@@ -9,8 +9,8 @@
 # 1. Fixes Docker socket access (GID mismatch between host and container)
 # 2. Generates .mcp.json with Playwright MCP connection
 #
-# Agents, skills, rules, and CLAUDE.md are mounted directly via Docker
-# volume subpaths in docker-compose — no symlinks or copies needed.
+# Agents volume is mounted at /agents-data (read-only). Symlinks are
+# created to the paths Claude Code expects on every start.
 #
 # Config hierarchy (Claude Code in DDEV):
 #   ~/.ddev/claude-code/settings.json       → user-level (shared, all projects)
@@ -27,7 +27,17 @@ fi
 # Ensure .claude directory exists for config and MCP client cache
 mkdir -p "$HOME/.claude" 2>/dev/null || true
 
-# --- 1. Fix Docker socket access if needed ---
+# --- 1. Link agents, skills, rules, and CLAUDE.md from agents-sync volume ---
+AGENTS_DATA="/agents-data"
+if [ -d "$AGENTS_DATA" ]; then
+  mkdir -p /var/www/html/.claude
+  for dir in agents skills rules; do
+    [ -d "$AGENTS_DATA/$dir" ] && ln -sfn "$AGENTS_DATA/$dir" "/var/www/html/.claude/$dir"
+  done
+  [ -f "$AGENTS_DATA/CLAUDE.md" ] && ln -sf "$AGENTS_DATA/CLAUDE.md" /var/www/html/CLAUDE.md
+fi
+
+# --- 2. Fix Docker socket access if needed ---
 # On Linux, the socket GID may not match the container's docker group.
 # On macOS/Windows Docker Desktop, the socket is already accessible — this is skipped.
 if [ -z "$_DOCKER_GROUP_FIXED" ] && [ -S /var/run/docker.sock ] && ! docker info > /dev/null 2>&1; then
