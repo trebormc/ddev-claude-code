@@ -50,7 +50,7 @@ This automatically installs the required dependencies:
 
 ## Prerequisites
 
-- [DDEV](https://ddev.readthedocs.io/) >= v1.23.5
+- [DDEV](https://ddev.readthedocs.io/) >= v1.24.10
 - An Anthropic API key or OAuth session
 
 ## Authentication
