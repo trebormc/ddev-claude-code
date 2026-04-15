@@ -22,33 +22,33 @@ If you need a standalone Claude Code container without the multi-container setup
 
 ## Quick Start
 
+The **recommended way** to install this add-on is through the [DDEV AI Workspace](https://github.com/trebormc/ddev-ai-workspace), which installs all tools and dependencies with a single command:
+
 ```bash
-# 1. Install the add-on
-ddev add-on get trebormc/ddev-claude-code
-
-# 2. Restart DDEV
+ddev add-on get trebormc/ddev-ai-workspace
 ddev restart
-
-# 3. Launch Claude Code (authenticate on first run)
 ddev claude-code  # or: ddev cc
 ```
+
+### Standalone installation
+
+If you only need Claude Code without the rest of the workspace, you can install it individually. This requires familiarity with the DDEV add-on ecosystem and its dependencies:
+
+```bash
+ddev add-on get trebormc/ddev-claude-code
+ddev restart
+ddev claude-code  # or: ddev cc
+```
+
+This automatically installs the required dependencies:
+- [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) -- auto-syncs AI agents from git (provides CLAUDE.md)
+- [ddev-beads](https://github.com/trebormc/ddev-beads) -- task tracking
+- [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp) -- browser automation
 
 ## Prerequisites
 
 - [DDEV](https://ddev.readthedocs.io/) >= v1.23.5
 - An Anthropic API key or OAuth session
-
-## Installation
-
-```bash
-ddev add-on get trebormc/ddev-claude-code
-ddev restart
-```
-
-This automatically installs all dependencies:
-- [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) -- auto-syncs AI agents from git (provides CLAUDE.md)
-- [ddev-beads](https://github.com/trebormc/ddev-beads) -- task tracking
-- [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp) -- browser automation
 
 ## Authentication
 
