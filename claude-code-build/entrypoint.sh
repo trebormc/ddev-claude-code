@@ -18,6 +18,15 @@
 #   <project>/.mcp.json                     → MCP servers (generated per project)
 # =============================================================================
 
+# --- 0. Ensure HOME directory is writable ---
+# When docker-compose overrides user UID/GID, /home/claude may be owned by
+# the build-time UID (1000). Fix ownership so the runtime user can write there.
+if [ -d "$HOME" ] && [ ! -w "$HOME" ]; then
+  sudo chown -R "$(id -u):$(id -g)" "$HOME"
+fi
+# Ensure .claude directory exists for config and MCP client cache
+mkdir -p "$HOME/.claude" 2>/dev/null || true
+
 # --- 1. Fix Docker socket access if needed ---
 # On Linux, the socket GID may not match the container's docker group.
 # On macOS/Windows Docker Desktop, the socket is already accessible — this is skipped.

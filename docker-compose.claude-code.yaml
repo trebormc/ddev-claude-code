@@ -64,6 +64,7 @@ services:
       - ddev-global-cache:/mnt/ddev-global-cache
 
     environment:
+      - HOME=/home/claude
       - DDEV_SITENAME
       - DDEV_PRIMARY_URL
       - DDEV_DOCROOT
