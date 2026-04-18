@@ -154,6 +154,8 @@ Inside the container (via `ddev claude-code shell`), these helper functions are 
 |--------|-------------|
 | `drush` | Run drush commands in the web container |
 | `composer` | Run composer in the web container |
+| `phpunit` | Run PHPUnit tests in the web container |
+| `phpstan` | Run PHPStan analysis in the web container |
 | `web-exec` | Execute any command in the web container |
 | `web-shell` | Open an interactive shell in the web container |
 | `bd` | Run Beads task tracking commands |
@@ -162,7 +164,7 @@ Inside the container (via `ddev claude-code shell`), these helper functions are 
 
 When [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) is installed (auto-installed as dependency), Claude Code automatically gets:
 
-- **13 specialized agents** in `.claude/agents/` (drupal-dev, three-judges, etc.)
+- **10 specialized agents** in `.claude/agents/` (drupal-dev, code-review, etc.)
 - **CLAUDE.md** with Drupal development instructions in the project root
 - **Rules and skills** for Drupal development workflows
 
@@ -218,7 +220,7 @@ This add-on is part of [DDEV AI Workspace](https://github.com/trebormc/ddev-ai-w
 | [ddev-playwright-mcp](https://github.com/trebormc/ddev-playwright-mcp) | Headless Playwright browser for browser automation and visual testing. | Auto-installed dependency |
 | [ddev-beads](https://github.com/trebormc/ddev-beads) | [Beads](https://github.com/steveyegge/beads) git-backed task tracker shared by all AI containers. | Auto-installed dependency |
 | [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) | Auto-syncs AI agent repositories into a shared Docker volume. Provides CLAUDE.md. | Auto-installed dependency |
-| [drupal-ai-agents](https://github.com/trebormc/drupal-ai-agents) | 13 agents, 4 rules, 14 skills for Drupal development. Synced automatically via ddev-agents-sync. | Agent configuration |
+| [drupal-ai-agents](https://github.com/trebormc/drupal-ai-agents) | 10 agents, 12 rules, 24 skills for Drupal development. Synced automatically via ddev-agents-sync. | Agent configuration |
 
 ## Disclaimer
 
