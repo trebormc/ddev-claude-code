@@ -55,7 +55,6 @@ services:
       - ${HOST_CLAUDE_CONFIG_DIR}/.credentials.json:/home/claude/.claude/.credentials.json
       # Shared user state — onboarding, theme, account (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}/.claude.json:/home/claude/.claude.json
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ddev-global-cache:/mnt/ddev-global-cache
 
     environment:

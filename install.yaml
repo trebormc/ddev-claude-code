@@ -3,6 +3,7 @@ name: ddev-claude-code
 ddev_version_constraint: '>= v1.24.10'
 
 dependencies:
+  - trebormc/ddev-ai-ssh
   - trebormc/ddev-playwright-mcp
   - trebormc/ddev-beads
   - trebormc/ddev-agents-sync
@@ -23,6 +24,7 @@ project_files:
   - docker-compose.claude-code.yaml
   - claude-code-build/Dockerfile.claude-code
   - claude-code-build/entrypoint.sh
+  - claude-code-build/ssh-config
   - commands/host/claude-code
   - commands/host/cc
 
