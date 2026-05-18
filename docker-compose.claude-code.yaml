@@ -55,6 +55,11 @@ services:
       - ${HOST_CLAUDE_CONFIG_DIR}/.credentials.json:/home/claude/.claude/.credentials.json
       # Shared user state — onboarding, theme, account (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}/.claude.json:/home/claude/.claude.json
+      # Multica daemon: env file from the shared ~/.ddev/multica/ directory.
+      # Same file is mounted by every Multica-aware DDEV addon.
+      # Empty MULTICA_TOKEN means disabled — entrypoint checks before acting.
+      - ${HOME}/.ddev/multica/.env.multica:/home/claude/.env.multica:ro
+      - ${HOME}/.ddev/multica/.env.multica.example:/home/claude/.env.multica.example:ro
       - ddev-global-cache:/mnt/ddev-global-cache
 
     environment:
