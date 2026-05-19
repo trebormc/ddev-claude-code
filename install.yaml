@@ -36,7 +36,6 @@ post_install_actions:
     #ddev-description:Configuring Claude Code environment
     if [ ! -f .env.claude-code ]; then
       cat > .env.claude-code << 'ENVEOF'
-    #ddev-generated
     # Claude Code environment configuration
 
     # Shared config directory for Claude Code credentials and settings.
