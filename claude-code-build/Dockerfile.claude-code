@@ -30,7 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && mkdir -p /var/run/sshd \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js 22 (required by Claude Code)
+# Install Node.js 22 (kept for optional npm-based tooling; Claude Code itself
+# is installed below via its official native installer, not via npm).
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
@@ -88,6 +89,7 @@ RUN curl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts
 # Create required directories
 RUN mkdir -p ${USER_HOME}/.claude \
     && mkdir -p ${USER_HOME}/.npm-global \
+    && mkdir -p ${USER_HOME}/.local/bin \
     && mkdir -p /var/www/html \
     && chown -R ${USER_UID}:${USER_GID} ${USER_HOME} \
     && chown -R ${USER_UID}:${USER_GID} /var/www/html
@@ -95,16 +97,18 @@ RUN mkdir -p ${USER_HOME}/.claude \
 USER ${USERNAME}
 WORKDIR ${USER_HOME}
 
-# Configure npm global packages in user home
+# Configure paths: ~/.local/bin is where the native Claude Code installer lands;
+# ~/.npm-global is kept for any optional npm packages users may add later.
 ENV HOME=${USER_HOME}
 ENV NPM_CONFIG_PREFIX=${USER_HOME}/.npm-global
-ENV PATH="${USER_HOME}/.npm-global/bin:${PATH}"
+ENV PATH="${USER_HOME}/.local/bin:${USER_HOME}/.npm-global/bin:${PATH}"
 
-# Install Claude Code globally
-RUN npm install -g @anthropic-ai/claude-code@latest
+# Install Claude Code via the official native installer (recommended by Anthropic).
+# See https://code.claude.com/docs/en/quickstart#step-1-install-claude-code
+RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Create useful aliases and helper functions
-RUN echo 'export PATH="${HOME}/.npm-global/bin:${PATH}"' >> ~/.bashrc \
+RUN echo 'export PATH="${HOME}/.local/bin:${HOME}/.npm-global/bin:${PATH}"' >> ~/.bashrc \
     && echo 'alias ll="ls -la"' >> ~/.bashrc \
     && echo '' >> ~/.bashrc \
     && echo '# Safe SSH command wrapper — preserves quoting across SSH' >> ~/.bashrc \
