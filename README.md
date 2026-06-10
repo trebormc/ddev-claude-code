@@ -163,15 +163,15 @@ Inside the container (via `ddev claude-code shell`), these helper functions are 
 
 ## Agents and CLAUDE.md
 
-When [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) is installed (auto-installed as dependency), Claude Code automatically gets:
+When [ddev-agents-sync](https://github.com/trebormc/ddev-agents-sync) is installed (auto-installed as dependency), Claude Code automatically gets the Drupal configuration at the USER level inside the container (`~/.claude/`), leaving your project files untouched:
 
-- **10 specialized agents** in `.claude/agents/` (drupal-dev, code-review, etc.)
-- **CLAUDE.md** with Drupal development instructions in the project root
-- **Rules and skills** for Drupal development workflows
+- **10 specialized agents** in `~/.claude/agents/` (drupal-dev, code-review, etc.)
+- **Rules** in `~/.claude/rules/` and **skills** in `~/.claude/skills/`
+- **CLAUDE.md** with Drupal development instructions as user-level memory (`~/.claude/CLAUDE.md`)
 
 Agent `.md` files use model tokens (like `${MODEL_CHEAP}`) that are resolved to Claude Code aliases (like `haiku`) during sync. See [drupal-ai-agents](https://github.com/trebormc/drupal-ai-agents) for the full list of agents, tokens, and customization options.
 
-You can place your own `CLAUDE.md` in your Drupal project root. It won't be overwritten if it already exists.
+Your Drupal project can ship its own `CLAUDE.md` and `.claude/` directory (agents, skills, rules) — they are never touched by this add-on, load IN ADDITION to the user-level configuration, and take priority over it.
 
 ### Customizing agents and models
 

@@ -32,22 +32,26 @@ services:
 
     volumes:
       - ../:/var/www/html
-      # Agents, skills, rules from agents-sync volume (directory subpath mounts)
+      # Agents, skills, rules from agents-sync volume, mounted at USER level
+      # (~/.claude/) — global config inside the container. The project's own
+      # .claude/ directory is left untouched so each project can ship its own
+      # project-specific agents/skills/rules/CLAUDE.md (project level has
+      # higher priority and loads IN ADDITION to user level).
       - type: volume
         source: agents-claude-data
-        target: /var/www/html/.claude/agents
+        target: /home/claude/.claude/agents
         volume:
           subpath: agents
         read_only: true
       - type: volume
         source: agents-claude-data
-        target: /var/www/html/.claude/skills
+        target: /home/claude/.claude/skills
         volume:
           subpath: skills
         read_only: true
       - type: volume
         source: agents-claude-data
-        target: /var/www/html/.claude/rules
+        target: /home/claude/.claude/rules
         volume:
           subpath: rules
         read_only: true
