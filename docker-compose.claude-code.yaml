@@ -57,8 +57,15 @@ services:
         read_only: true
       # Full agents volume (for CLAUDE.md copy in entrypoint)
       - agents-claude-data:/agents-data:ro
-      # Shared config — only credentials and settings (read-write)
-      - ${HOST_CLAUDE_CONFIG_DIR}/settings.json:/home/claude/.claude/settings.json
+      # Host shared config dir (read-only side mount). The entrypoint builds
+      # the container-global ~/.claude/settings.json by DEEP-MERGING this
+      # cascade (higher wins):
+      #   1. project .claude/settings.json        — merged on top natively by Claude Code
+      #   2. /host-claude-config/settings.json    — user's config shared across all DDEV projects
+      #   3. /opt/claude-defaults/settings.json   — basic defaults baked into the image
+      # A /host-claude-config/CLAUDE.md, if present, overrides the synced orchestrator.
+      - ${HOST_CLAUDE_CONFIG_DIR}:/host-claude-config:ro
+      # Shared credentials and state (read-write so logins persist on the host)
       - ${HOST_CLAUDE_CONFIG_DIR}/.credentials.json:/home/claude/.claude/.credentials.json
       # Shared user state — onboarding, theme, account (read-write)
       - ${HOST_CLAUDE_CONFIG_DIR}/.claude.json:/home/claude/.claude.json

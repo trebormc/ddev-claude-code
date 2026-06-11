@@ -128,6 +128,11 @@ RUN echo 'export PATH="${HOME}/.local/bin:${HOME}/.npm-global/bin:${PATH}"' >> ~
     && echo 'echo "Commands: claude | drush | phpunit | phpstan | web-shell | bd"' >> ~/.bashrc \
     && echo '' >> ~/.bashrc
 
+# Baked-in default settings — lowest-priority level of the config cascade
+# (see entrypoint: baked defaults <- host shared settings, deep-merged; the
+# project's .claude/settings.json is merged on top natively by Claude Code)
+COPY claude-code-build/settings.default.json /opt/claude-defaults/settings.json
+
 # Copy entrypoint script (must be done before USER switch, or use sudo)
 COPY claude-code-build/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN sudo chmod +x /usr/local/bin/entrypoint.sh
