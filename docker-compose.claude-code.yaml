@@ -60,9 +60,10 @@ services:
       # Host shared config dir (read-only side mount). The entrypoint builds
       # the container-global ~/.claude/settings.json by DEEP-MERGING this
       # cascade (higher wins):
-      #   1. project .claude/settings.json        — merged on top natively by Claude Code
-      #   2. /host-claude-config/settings.json    — user's config shared across all DDEV projects
-      #   3. /opt/claude-defaults/settings.json   — basic defaults baked into the image
+      #   1. project .claude/settings.json               — merged on top natively by Claude Code
+      #   2. /host-claude-config/settings.json           — user's config shared across all DDEV projects
+      #   3. /agents-data/settings.generated.json        — git-policy hook from agents-sync flags
+      #   4. /opt/claude-defaults/settings.json          — basic defaults baked into the image
       # A /host-claude-config/CLAUDE.md, if present, overrides the synced orchestrator.
       - ${HOST_CLAUDE_CONFIG_DIR}:/host-claude-config:ro
       # Shared credentials and state (read-write so logins persist on the host)
