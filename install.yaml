@@ -24,6 +24,7 @@ project_files:
   - docker-compose.claude-code.yaml
   - claude-code-build/Dockerfile.claude-code
   - claude-code-build/entrypoint.sh
+  - claude-code-build/claude-usage-wrapper.sh
   - claude-code-build/ssh-config
   - claude-code-build/settings.default.json
   - commands/host/claude-code

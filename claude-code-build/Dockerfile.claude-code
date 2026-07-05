@@ -107,6 +107,14 @@ ENV PATH="${USER_HOME}/.local/bin:${USER_HOME}/.npm-global/bin:${PATH}"
 # See https://code.claude.com/docs/en/quickstart#step-1-install-claude-code
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
+# Wrap the `claude` binary so HUMAN sessions can forward token-usage telemetry
+# to Atlas (see claude-usage-wrapper.sh). The real binary is kept at
+# `claude-real`; the transparent wrapper takes its place on PATH. Daemon-run
+# invocations are detected inside the wrapper and left untouched.
+RUN mv "${USER_HOME}/.local/bin/claude" "${USER_HOME}/.local/bin/claude-real"
+COPY --chown=${USER_UID}:${USER_GID} claude-code-build/claude-usage-wrapper.sh ${USER_HOME}/.local/bin/claude
+RUN chmod +x "${USER_HOME}/.local/bin/claude"
+
 # Create useful aliases and helper functions
 RUN echo 'export PATH="${HOME}/.local/bin:${HOME}/.npm-global/bin:${PATH}"' >> ~/.bashrc \
     && echo 'alias ll="ls -la"' >> ~/.bashrc \
