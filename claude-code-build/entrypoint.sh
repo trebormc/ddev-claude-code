@@ -39,7 +39,8 @@ for src in "/opt/claude-defaults/settings.json" "/agents-data/settings.generated
   fi
 done
 if [ "${#sources[@]}" -gt 0 ]; then
-  jq -s 'reduce .[] as $x ({}; . * $x)' "${sources[@]}" > "$HOME/.claude/settings.json"
+  # del: strip the DDEV update-tracking signature key from the baked default
+  jq -s 'reduce .[] as $x ({}; . * $x) | del(."#ddev-generated")' "${sources[@]}" > "$HOME/.claude/settings.json"
   echo "[claude-code] settings.json <- merged: ${sources[*]}"
 fi
 
