@@ -62,7 +62,7 @@ services:
       # cascade (higher wins):
       #   1. project .claude/settings.json               — merged on top natively by Claude Code
       #   2. /host-claude-config/settings.json           — user's config shared across all DDEV projects
-      #   3. /agents-data/settings.generated.json        — git-policy hook from agents-sync flags
+      #   3. /agents-data/settings.generated.json        — from agents-sync: git-policy hook + default model (CC_MODEL_MAIN)
       #   4. /opt/claude-defaults/settings.json          — basic defaults baked into the image
       # A /host-claude-config/CLAUDE.md, if present, overrides the synced orchestrator.
       - ${HOST_CLAUDE_CONFIG_DIR}:/host-claude-config:ro
