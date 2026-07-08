@@ -69,9 +69,15 @@ After installation, environment variables are in `.ddev/.env.claude-code`:
 # Shared across ALL DDEV projects. Change only if you need a custom location.
 HOST_CLAUDE_CONFIG_DIR=${HOME}/.ddev/claude-code
 
+# Self-update Claude Code on every container start (set to false to keep
+# the version baked into the image)
+CLAUDE_CODE_AUTO_UPDATE=true
+
 # Timezone
 TZ=UTC
 ```
+
+> **Note:** the image bakes whatever Claude Code version was latest when it was built, and Docker layer caching freezes it there. With `CLAUDE_CODE_AUTO_UPDATE=true` (the default) the entrypoint runs the native `claude update` on every start (a fast no-op when already current, with the official installer as fallback); offline starts keep the current version.
 
 > **Note:** `HOST_CLAUDE_CONFIG_DIR` must point to an existing directory. The installer creates `~/.ddev/claude-code/` automatically. If you change this value, make sure the directory exists before running `ddev restart`.
 

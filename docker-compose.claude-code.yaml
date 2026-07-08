@@ -88,6 +88,9 @@ services:
       - DB_CONTAINER=ddev-${DDEV_SITENAME}-db
       - PLAYWRIGHT_MCP_URL=http://playwright-mcp:8931/mcp
       - BEADS_CONTAINER=ddev-${DDEV_SITENAME}-beads
+      # Self-update Claude Code on every container start (see entrypoint).
+      # Set CLAUDE_CODE_AUTO_UPDATE=false in .ddev/.env.claude-code to opt out.
+      - CLAUDE_CODE_AUTO_UPDATE=${CLAUDE_CODE_AUTO_UPDATE:-true}
       - TZ=${TZ:-UTC}
       - VIRTUAL_HOST=${DDEV_HOSTNAME}
 

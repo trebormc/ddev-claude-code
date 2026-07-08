@@ -11,6 +11,37 @@ if [ -d "$HOME" ] && [ ! -w "$HOME" ]; then
 fi
 mkdir -p "$HOME/.claude" 2>/dev/null || true
 
+# --- 0b. Self-update Claude Code (best effort) ---
+# The image bakes whatever Claude Code version was latest at BUILD time, and
+# Docker layer caching freezes that layer across rebuilds — so restarts keep
+# serving a stale version. Refresh on every container start: `claude update`
+# (the native updater) is a fast no-op when already current; re-running the
+# official installer is the fallback for versions whose updater is broken.
+# Offline starts keep the baked version. Opt out with
+# CLAUDE_CODE_AUTO_UPDATE=false in .ddev/.env.claude-code.
+if [ "${CLAUDE_CODE_AUTO_UPDATE:-true}" = "true" ]; then
+  CC_REAL="$HOME/.local/bin/claude-real"
+  CC_CURRENT=$("$CC_REAL" --version 2>/dev/null || echo "unknown")
+  timeout 300 "$CC_REAL" update >/dev/null 2>&1 \
+    || timeout 300 bash -c 'curl -fsSL https://claude.ai/install.sh | bash' >/dev/null 2>&1 \
+    || echo "[claude-code] WARNING: update failed — keeping $CC_CURRENT"
+  # Both update paths may recreate ~/.local/bin/claude as the real launcher,
+  # clobbering the usage wrapper — move the fresh launcher to claude-real and
+  # restore the wrapper (pristine copy baked at /opt/claude-defaults/).
+  if [ -e "$HOME/.local/bin/claude" ] && \
+     ! head -c 512 "$HOME/.local/bin/claude" 2>/dev/null | grep -q 'ddev-generated'; then
+    mv -f "$HOME/.local/bin/claude" "$CC_REAL"
+    cp /opt/claude-defaults/claude-usage-wrapper.sh "$HOME/.local/bin/claude"
+    chmod +x "$HOME/.local/bin/claude"
+  fi
+  CC_NEW=$("$CC_REAL" --version 2>/dev/null || echo "unknown")
+  if [ "$CC_NEW" != "$CC_CURRENT" ]; then
+    echo "[claude-code] Claude Code updated: $CC_CURRENT -> $CC_NEW"
+  else
+    echo "[claude-code] Claude Code $CC_CURRENT is up to date"
+  fi
+fi
+
 # --- 1. Build the container-global Claude Code config (USER level) ---
 # settings.json cascade — all levels are DEEP-MERGED, higher levels win key
 # by key (same semantics as Claude Code's own native settings merge):

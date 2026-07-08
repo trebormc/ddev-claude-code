@@ -141,6 +141,11 @@ RUN echo 'export PATH="${HOME}/.local/bin:${HOME}/.npm-global/bin:${PATH}"' >> ~
 # project's .claude/settings.json is merged on top natively by Claude Code)
 COPY claude-code-build/settings.default.json /opt/claude-defaults/settings.json
 
+# Pristine copy of the usage wrapper — the entrypoint self-update may recreate
+# ~/.local/bin/claude as the real launcher, clobbering the wrapper; the
+# entrypoint restores it from this copy
+COPY claude-code-build/claude-usage-wrapper.sh /opt/claude-defaults/claude-usage-wrapper.sh
+
 # Copy entrypoint script (must be done before USER switch, or use sudo)
 COPY claude-code-build/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN sudo chmod +x /usr/local/bin/entrypoint.sh

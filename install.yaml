@@ -45,6 +45,10 @@ post_install_actions:
     # need to authenticate once. Change only if you need a custom location.
     HOST_CLAUDE_CONFIG_DIR=${HOME}/.ddev/claude-code
 
+    # Self-update Claude Code on every container start (set to false to keep
+    # the version baked into the image)
+    CLAUDE_CODE_AUTO_UPDATE=true
+
     # Timezone
     TZ=UTC
     ENVEOF
