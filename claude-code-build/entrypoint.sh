@@ -90,6 +90,18 @@ if [ "${CLAUDE_CODE_AUTO_UPDATE:-true}" = "true" ]; then
     cp /opt/claude-defaults/claude-usage-wrapper.sh "$HOME/.local/bin/claude"
     chmod +x "$HOME/.local/bin/claude"
   fi
+  # When the launcher on PATH is not the installer's own symlink (our wrapper),
+  # the native updater installs new versions under versions/ but leaves the
+  # launcher alone — so claude-real, the symlink moved aside at build time,
+  # stays pinned to the baked version. Repoint it at the newest installed one.
+  CC_VERSIONS="$HOME/.local/share/claude/versions"
+  if [ -L "$CC_REAL" ] && [ -d "$CC_VERSIONS" ]; then
+    CC_LATEST=$(ls -1 "$CC_VERSIONS" 2>/dev/null | grep -E '^[0-9]+(\.[0-9]+)+$' | sort -V | tail -n 1)
+    if [ -n "$CC_LATEST" ] && [ -x "$CC_VERSIONS/$CC_LATEST" ] \
+       && [ "$(readlink "$CC_REAL")" != "$CC_VERSIONS/$CC_LATEST" ]; then
+      ln -sfn "$CC_VERSIONS/$CC_LATEST" "$CC_REAL"
+    fi
+  fi
   CC_NEW=$("$CC_REAL" --version 2>/dev/null || echo "unknown")
   if [ "$CC_NEW" != "$CC_CURRENT" ]; then
     echo "[claude-code] Claude Code updated: $CC_CURRENT -> $CC_NEW"
