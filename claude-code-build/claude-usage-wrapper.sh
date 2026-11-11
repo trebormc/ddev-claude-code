@@ -22,7 +22,9 @@
 # Any uncertainty falls back to "do not forward" to protect against double
 # counting.
 
-REAL="$HOME/.local/bin/claude-real"
+# Installed at /opt/ddev-ai/bin/claude, first on PATH. REAL is the native
+# launcher, owned and kept current by Claude Code's own updater.
+REAL="$HOME/.local/bin/claude"
 CONFIG="$HOME/.config/atlas/human-usage.env"
 
 # ---- origin detection: is an ancestor the Multica daemon? --------------------

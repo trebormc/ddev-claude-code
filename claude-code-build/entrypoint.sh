@@ -75,39 +75,29 @@ fi
 # official installer is the fallback for versions whose updater is broken.
 # Offline starts keep the baked version. Opt out with
 # CLAUDE_CODE_AUTO_UPDATE=false in .ddev/.env.claude-code.
+# The updater owns ~/.local/bin/claude (the native launcher) and keeps it
+# pointing at the newest version. The usage wrapper lives elsewhere
+# (/opt/ddev-ai/bin/claude, first on PATH), so no update path — this one, the
+# in-app auto-update, a manual `claude update` — can remove it.
+CC_REAL="$HOME/.local/bin/claude"
 if [ "${CLAUDE_CODE_AUTO_UPDATE:-true}" = "true" ]; then
-  CC_REAL="$HOME/.local/bin/claude-real"
   CC_CURRENT=$("$CC_REAL" --version 2>/dev/null || echo "unknown")
   timeout 300 "$CC_REAL" update >/dev/null 2>&1 \
     || timeout 300 bash -c 'curl -fsSL https://claude.ai/install.sh | bash' >/dev/null 2>&1 \
     || echo "[claude-code] WARNING: update failed — keeping $CC_CURRENT"
-  # Both update paths may recreate ~/.local/bin/claude as the real launcher,
-  # clobbering the usage wrapper — move the fresh launcher to claude-real and
-  # restore the wrapper (pristine copy baked at /opt/claude-defaults/).
-  if [ -e "$HOME/.local/bin/claude" ] && \
-     ! head -c 512 "$HOME/.local/bin/claude" 2>/dev/null | grep -q 'ddev-generated'; then
-    mv -f "$HOME/.local/bin/claude" "$CC_REAL"
-    cp /opt/claude-defaults/claude-usage-wrapper.sh "$HOME/.local/bin/claude"
-    chmod +x "$HOME/.local/bin/claude"
-  fi
-  # When the launcher on PATH is not the installer's own symlink (our wrapper),
-  # the native updater installs new versions under versions/ but leaves the
-  # launcher alone — so claude-real, the symlink moved aside at build time,
-  # stays pinned to the baked version. Repoint it at the newest installed one.
-  CC_VERSIONS="$HOME/.local/share/claude/versions"
-  if [ -L "$CC_REAL" ] && [ -d "$CC_VERSIONS" ]; then
-    CC_LATEST=$(ls -1 "$CC_VERSIONS" 2>/dev/null | grep -E '^[0-9]+(\.[0-9]+)+$' | sort -V | tail -n 1)
-    if [ -n "$CC_LATEST" ] && [ -x "$CC_VERSIONS/$CC_LATEST" ] \
-       && [ "$(readlink "$CC_REAL")" != "$CC_VERSIONS/$CC_LATEST" ]; then
-      ln -sfn "$CC_VERSIONS/$CC_LATEST" "$CC_REAL"
-    fi
-  fi
   CC_NEW=$("$CC_REAL" --version 2>/dev/null || echo "unknown")
   if [ "$CC_NEW" != "$CC_CURRENT" ]; then
     echo "[claude-code] Claude Code updated: $CC_CURRENT -> $CC_NEW"
   else
     echo "[claude-code] Claude Code $CC_CURRENT is up to date"
   fi
+fi
+# Usage forwarding depends on `claude` resolving to the wrapper. Say so loudly
+# if something ever shadows it (a PATH change, a stray binary), instead of
+# losing the statistics silently.
+CC_ON_PATH=$(command -v claude 2>/dev/null || echo "not found")
+if [ "$CC_ON_PATH" != "/opt/ddev-ai/bin/claude" ]; then
+  echo "[atlas] WARNING: \`claude\` resolves to $CC_ON_PATH, not the usage wrapper /opt/ddev-ai/bin/claude — human token usage will NOT be forwarded"
 fi
 
 # --- 1. Build the container-global Claude Code config (USER level) ---

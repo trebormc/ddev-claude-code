@@ -41,6 +41,20 @@ health_checks() {
   run ddev add-on list --installed
   assert_success
   assert_output --partial "ddev-claude-code"
+  # The usage wrapper must front the native launcher on PATH after the
+  # self-update, in plain exec and in login shells alike
+  run ddev exec -s claude-code bash -c 'command -v claude'
+  assert_success
+  assert_output "/opt/ddev-ai/bin/claude"
+  run ddev exec -s claude-code bash -lc 'command -v claude'
+  assert_success
+  assert_output "/opt/ddev-ai/bin/claude"
+  run ddev exec -s claude-code head -c 512 /opt/ddev-ai/bin/claude
+  assert_success
+  assert_output --partial "ddev-generated"
+  run ddev exec -s claude-code claude --version
+  assert_success
+  assert_output --partial "Claude Code"
 }
 
 teardown() {
