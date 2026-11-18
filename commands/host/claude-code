@@ -40,6 +40,10 @@ case "$1" in
         docker exec -it -u claude "$CLAUDE_CONTAINER" bash
         ;;
     *)
+        if [[ "$1" = -* ]]; then
+            # Assume this is an argument being passed to claude.
+            set -- claude "$@"
+        fi
         set_tab_title "$1"
         trap restore_tab_title EXIT
         docker exec -it -u claude "$CLAUDE_CONTAINER" "$@"

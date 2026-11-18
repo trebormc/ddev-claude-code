@@ -87,3 +87,22 @@ teardown() {
   assert_success
   health_checks
 }
+
+# bats test_tags=command
+@test "command and argument handling" {
+  set -eu -o pipefail
+  echo "# ddev add-on get ${DIR} with project ${PROJNAME} in $(pwd)" >&3
+  run ddev add-on get "${DIR}"
+  assert_success
+  run ddev restart -y
+  assert_success
+  # Check the version of Claude.
+  run ddev claude-code --version
+  assert_success
+  assert_output --partial "(Claude Code)"
+  # Normal commands being passed in should work as expected.
+  run ddev claude-code test -f /.dockerenv
+  assert_success
+  run ddev claude-code test -d /.dockerenv
+  assert_failure
+}
