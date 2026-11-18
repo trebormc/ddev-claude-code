@@ -155,6 +155,8 @@ Claude Code communicates with the web container via SSH (`ssh web`), giving it f
 | `ddev claude-code tui` | Start interactive session (same as above) |
 | `ddev claude-code tui Fix login bug` | Start interactive session with a custom tab title |
 | `ddev claude-code shell` | Open a bash shell in the container |
+| `ddev claude-code --resume <id>` | Arguments starting with `-` are passed to `claude` |
+| `ddev claude <arguments>` | Run the `claude` CLI with any arguments (`ddev claude update`, `ddev claude mcp list`) |
 | `ddev claude-code <command>` | Run any command in the container |
 
 ### Tab title for multi-project workflows

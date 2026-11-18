@@ -2,13 +2,23 @@
 
 #ddev-generated
 ## Description: Access the Claude Code AI container (TUI or shell)
-## Usage: claude-code [tui [title...]|shell|command...]
-## Example: "ddev claude-code" for TUI, "ddev claude-code shell" for bash, "ddev claude-code <command>" to run a command
+## Usage: claude-code [tui [title...]|shell|-claude-option...|command...]
+## Example: "ddev claude-code" for TUI, "ddev claude-code shell" for bash, "ddev claude-code --resume <id>" to pass options to claude, "ddev claude-code <command>" to run a command
 ## ExecRaw: true
 
 CLAUDE_CONTAINER="ddev-${DDEV_SITENAME}-claude-code"
 
+# Allocate a TTY only when attached to a terminal, so the command also works
+# in scripts, pipes and CI ("the input device is not a TTY" otherwise).
+if [ -t 0 ] && [ -t 1 ]; then
+    EXEC_FLAGS=(-it)
+else
+    EXEC_FLAGS=(-i)
+fi
+
 set_tab_title() {
+    # Never write escape sequences into piped or captured output.
+    [ -t 1 ] || return 0
     local custom_title="$1"
     if [ -n "$custom_title" ]; then
         printf '\033]0;%s - %s\007' "${DDEV_SITENAME}" "$custom_title"
@@ -18,7 +28,20 @@ set_tab_title() {
 }
 
 restore_tab_title() {
+    [ -t 1 ] || return 0
     printf '\033]0;%s\007' "${TERM_PROGRAM:-Terminal}"
+}
+
+# Runs claude with the tab title owned by this script instead of the CLI.
+run_claude() {
+    local title="$1"
+    shift
+    set_tab_title "$title"
+    trap restore_tab_title EXIT
+    docker exec "${EXEC_FLAGS[@]}" -u claude \
+        -e CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 \
+        -e DDEV_TUI_TITLE="${title:-Claude Code}" \
+        "$CLAUDE_CONTAINER" claude "$@"
 }
 
 case "$1" in
@@ -26,26 +49,25 @@ case "$1" in
         if [ "$1" = "tui" ]; then
             shift
         fi
-        CUSTOM_TITLE="$*"
-        set_tab_title "$CUSTOM_TITLE"
-        trap restore_tab_title EXIT
-        docker exec -it -u claude \
-            -e CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1 \
-            -e DDEV_TUI_TITLE="${CUSTOM_TITLE:-Claude Code}" \
-            "$CLAUDE_CONTAINER" claude
+        run_claude "$*"
         ;;
     "shell"|"bash")
         set_tab_title "shell"
         trap restore_tab_title EXIT
-        docker exec -it -u claude "$CLAUDE_CONTAINER" bash
+        docker exec "${EXEC_FLAGS[@]}" -u claude "$CLAUDE_CONTAINER" bash
+        ;;
+    "claude")
+        # "ddev claude ..." lands here: everything after it goes to claude.
+        shift
+        run_claude "" "$@"
+        ;;
+    -*)
+        # An option instead of a command: it is meant for claude.
+        run_claude "" "$@"
         ;;
     *)
-        if [[ "$1" = -* ]]; then
-            # Assume this is an argument being passed to claude.
-            set -- claude "$@"
-        fi
         set_tab_title "$1"
         trap restore_tab_title EXIT
-        docker exec -it -u claude "$CLAUDE_CONTAINER" "$@"
+        docker exec "${EXEC_FLAGS[@]}" -u claude "$CLAUDE_CONTAINER" "$@"
         ;;
 esac

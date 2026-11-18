@@ -29,6 +29,7 @@ project_files:
   - claude-code-build/settings.default.json
   - commands/host/claude-code
   - commands/host/cc
+  - commands/host/claude
   - .env.multica.example
 
 global_files: []

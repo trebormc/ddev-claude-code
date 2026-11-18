@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+#ddev-generated
+## Description: Run the claude CLI in the Claude Code container, arguments passed as is
+## Usage: claude [claude arguments...]
+## Example: "ddev claude --resume <id>", "ddev claude update", "ddev claude mcp list"
+## ExecRaw: true
+
+exec ddev claude-code claude "$@"

@@ -100,6 +100,15 @@ teardown() {
   run ddev claude-code --version
   assert_success
   assert_output --partial "(Claude Code)"
+  # The shortcut and the raw claude command take the same options.
+  run ddev cc --version
+  assert_success
+  assert_output --partial "(Claude Code)"
+  run ddev claude --version
+  assert_success
+  assert_output --partial "(Claude Code)"
+  # Captured output must not carry the tab title escape sequences.
+  refute_output --partial $'\033]0;'
   # Normal commands being passed in should work as expected.
   run ddev claude-code test -f /.dockerenv
   assert_success
